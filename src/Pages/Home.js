@@ -1,15 +1,19 @@
 import React from 'react';
 
-import {View, Text} from 'react-native';
-
-import {Container} from './styles';
+import {Container, Title, Form, Input, Submit} from './styles';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+Icon.loadFont();
 
 export default function Home() {
   return (
     <Container>
-      <View>
-        <Text>Emerson</Text>
-      </View>
+      <Title>Repos</Title>
+      <Form>
+        <Input />
+        <Submit>
+          <Icon name="add" sice={22} color="#fff" />
+        </Submit>
+      </Form>
     </Container>
   );
 }
