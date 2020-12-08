@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {Container, Form, Input, List, Submit, Title} from './styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,6 +7,9 @@ import Repository from '../components/Repository';
 Icon.loadFont();
 
 export default function Home() {
+  useEffect(() => {
+    console.log('started Home');
+  }, []);
   return (
     <Container>
       <Title>Repos</Title>
