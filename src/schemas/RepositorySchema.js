@@ -1,11 +1,12 @@
 export default class RepositorySchema {
   static schema = {
-    name: 'RepositorySchema',
-    primaryKey: {type: 'int', indexed: true},
+    name: 'Repository',
+    primaryKey: 'id',
     properties: {
+      id: {type: 'int', indexed: true},
       name: 'string',
       fullName: 'string',
-      descriptions: 'string',
+      description: 'string',
       stars: 'int',
       forks: 'int',
     },

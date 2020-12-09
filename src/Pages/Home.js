@@ -5,11 +5,26 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Repository from '../components/Repository';
 import getRealm from '../services/realm';
 import api from '../services/api';
+import {Keyboard} from 'react-native';
+import axios from 'axios';
 
 Icon.loadFont();
 
 export default function Home() {
   const [input, setInput] = useState('');
+  const [error, setError] = useState(null);
+  const [repositories, setRepositories] = useState([]);
+
+  useEffect(() => {
+    async function loadRepositories() {
+      const realm = await getRealm();
+
+      const data = realm.objects('Repository').sorted('stars', true);
+
+      setRepositories(data);
+    }
+    loadRepositories();
+  }, []);
 
   async function saveRepository(repository) {
     const data = {
@@ -22,33 +37,39 @@ export default function Home() {
     };
 
     const realm = await getRealm();
+
     realm.write(() => {
-      realm.create('RepositorySchema', data);
+      realm.create('Repository', data, 'modified');
     });
+
+    return data;
   }
 
   async function handleAddRepository() {
     try {
       const response = await api.get(`/repos/${input}`);
+
       await saveRepository(response.data);
+
       setInput('');
-    } catch (error) {
-      console.log(error);
+      setError(false);
+      Keyboard.dismiss();
+    } catch (err) {
+      setError(true);
     }
   }
-
-  useEffect(() => {}, []);
 
   return (
     <Container>
       <Title>Repos</Title>
       <Form>
         <Input
+          value={input}
+          error={error}
+          onChangeText={setInput}
           autoCapitalize="none"
           autoCorrect={false}
-          placeholder="Procurar repositorio"
-          value={input}
-          onChangeText={setInput}
+          placeholder="Procurar repositório..."
         />
         <Submit onPress={handleAddRepository}>
           <Icon name="add" sice={22} color="#fff" />
@@ -56,15 +77,7 @@ export default function Home() {
       </Form>
       <List
         keyboardShouldPersistTaps="handled"
-        data={[
-          {
-            id: 1,
-            name: 'emerson',
-            description: 'lorem ipsum',
-            stars: 1234,
-            forks: 133,
-          },
-        ]}
+        data={repositories}
         keyExtractor={(item) => String(item.id)}
         renderItem={({item}) => <Repository data={item} />}
       />
